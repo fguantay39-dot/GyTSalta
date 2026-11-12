@@ -72,3 +72,26 @@ Toda la documentación, diagramas y scripts de base de datos se encuentran en la
 - **[schema.sql](./tp6/schema.sql):** Script DDL para MySQL con creación de la base `gyt_comunidad`, tablas con claves foráneas, campos de auditoría (`created_at`, `updated_at`) e índices explícitos (`CREATE INDEX`).
 - **[consultas.sql](./tp6/consultas.sql):** Consultas DML de prueba que validan el ciclo CRUD completo (CREATE con inserciones maestras y foráneas, READ con WHERE, ORDER BY e INNER JOINs relacionales, UPDATE y DELETE con WHERE estricto).
 
+### Capturas de pantalla de la Base de Datos (TP6)
+
+Las capturas de verificación de la base de datos se encuentran en [`tp6/capturas`](./tp6/capturas/):
+
+**1. Estructura de las 8 tablas normalizadas en phpMyAdmin**
+![Estructura de tablas](./tp6/capturas/01-phpmyadmin-tablas-estructura.png)
+
+**2. Datos de prueba en la tabla principal `publicaciones`**
+![Tabla publicaciones](./tp6/capturas/02-phpmyadmin-publicaciones-datos.png)
+
+**3. Datos de usuarios con roles y credenciales seguras**
+![Tabla usuarios](./tp6/capturas/03-phpmyadmin-usuarios-datos.png)
+
+**4. Diagrama relacional de claves foráneas (Diseñador phpMyAdmin)**
+![Diagrama relacional](./tp6/capturas/04-phpmyadmin-disenador-relacional.png)
+
+**5. Repositorio oficial en GitHub**
+![Repositorio oficial en GitHub](./tp6/capturas/05-github-repositorio-oficial.png)
+
+**6. Archivos entregados del TP6 en GitHub**
+![Archivos TP6](./tp6/capturas/06-github-carpeta-tp6-archivos.png)
+
+
