@@ -129,10 +129,20 @@ body {
     padding: 11px 25px;
     color: var(--primary-color);
     text-decoration: none;
+    transition: all 0.2s ease;
 }
 
 .menu-link:hover {
     background: #eaf6fc;
+    color: var(--secondary-color, #0077b6);
+}
+
+.menu-link.active,
+.sidebar-nav ul li.active > .menu-link {
+    background: #0077b6;
+    color: #ffffff !important;
+    font-weight: bold;
+    border-left: 5px solid #03045e;
 }
 
 .bold-link {

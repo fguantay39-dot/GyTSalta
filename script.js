@@ -21,8 +21,11 @@ updateClock();
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    // Mensaje de bienvenida
-    alert("¡Bienvenido al sitio informativo de Gimnasia y Tiro!");
+    // Mensaje de bienvenida (solo una vez por sesión para navegación fluida)
+    if (!sessionStorage.getItem('gyt_alerta_mostrada')) {
+        // alert("¡Bienvenido al sitio informativo de Gimnasia y Tiro!");
+        sessionStorage.setItem('gyt_alerta_mostrada', 'true');
+    }
 
     // Elementos del menú
     const openMenuBtn = document.getElementById('openMenuBtn');
@@ -148,25 +151,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
         link.addEventListener('click', event => {
 
-            event.preventDefault();
-
             const href = link.getAttribute('href');
 
             if (!href) {
                 return;
             }
 
-            const sectionId = href.substring(1);
-
-            showSection(sectionId);
-
-            closeMenu();
-
-            history.pushState(
-                null,
-                '',
-                `#${sectionId}`
-            );
+            if (href.startsWith('#')) {
+                event.preventDefault();
+                const sectionId = href.substring(1);
+                showSection(sectionId);
+                closeMenu();
+                history.pushState(
+                    null,
+                    '',
+                    `#${sectionId}`
+                );
+            } else {
+                closeMenu();
+            }
         });
 
     });
@@ -359,12 +362,6 @@ document.addEventListener('DOMContentLoaded', () => {
             openAuthBtn.textContent = user ? 'Salir' : 'Ingresar';
         }
 
-        function enterSite(user) {
-            setCurrentUser(user);
-            showSection('inicio');
-            history.pushState(null, '', '#inicio');
-        }
-
         authTabs.forEach(tab => {
             tab.addEventListener('click', () => {
                 const showRegister = tab.dataset.authMode === 'register';
@@ -390,7 +387,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     email: loginForm.elements.email.value.trim(),
                     password: loginForm.elements.password.value
                 });
-                enterSite(result.user);
+                setCurrentUser(result.user);
+                loginFeedback.textContent = `¡Bienvenido, ${result.user.name}!`;
                 loginForm.reset();
             } catch (error) {
                 loginFeedback.textContent = error.message;
@@ -413,7 +411,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     email: registerForm.elements.email.value.trim(),
                     password
                 });
-                enterSite(result.user);
+                setCurrentUser(result.user);
+                registerFeedback.textContent = `¡Cuenta creada! Bienvenido, ${result.user.name}.`;
                 registerForm.reset();
             } catch (error) {
                 registerFeedback.textContent = error.message;
