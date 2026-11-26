@@ -98,7 +98,20 @@ Cuando se inicia sesión con la cuenta de administrador (`fguantay39@gmail.com` 
 
 ---
 
-### 2. Trabajo Práctico N° 6 — Base de Datos Relacional MySQL y Normalización
+### 2. Módulo CRUD — Hito 2 / Clase 7 (Persistencia con PDO y Sentencias Preparadas)
+*Ubicación:* Carpeta [`admin/`](./admin/) y [`config/conexion.php`](./config/conexion.php)
+- **Conexión Robusta con PDO (`config/conexion.php`):** Instancia de PDO con manejo de errores mediante excepciones `try-catch (\PDOException $e)`, modo de fetch asociativo y desactivación de emulación de consultas preparadas (`ATTR_EMULATE_PREPARES => false`).
+- **Sentencias Preparadas Obligatorias:** Uso estricto de parámetros vinculados (`:titulo`, `:slug`, `:bajada`, `:contenido`, `:categoria_id`, etc.) en todas las operaciones, neutralizando cualquier vulnerabilidad de Inyección SQL (SQL Injection).
+- **Operaciones CRUD Completas:**
+  - **Create (`admin/crear.php`):** Formulario de alta e inserción de noticias con validación en servidor.
+  - **Read (`admin/index.php`):** Listado tabular con información de publicaciones, miniaturas, categorías y fechas.
+  - **Update (`admin/editar.php`):** Formulario precargado con datos del registro y actualización inmediata.
+  - **Delete (`admin/eliminar.php`):** Baja definitiva del registro de la base de datos con confirmación y redirección.
+- **Protección Anti-XSS:** Todas las salidas impresas utilizan `htmlspecialchars(..., ENT_QUOTES | ENT_HTML5, 'UTF-8')`.
+
+---
+
+### 3. Trabajo Práctico N° 6 — Base de Datos Relacional MySQL y Normalización
 *Ubicación detallada:* [`tp6/NORMALIZACION.md`](./tp6/NORMALIZACION.md), [`tp6/schema.sql`](./tp6/schema.sql) y [`tp6/consultas.sql`](./tp6/consultas.sql)
 - **Normalización de Base de Datos:**
   - **1FN (Primera Forma Normal):** Eliminación de grupos repetitivos y garantía de atomicidad en todos los campos (ej. separación de nombres, apellidos y roles).
@@ -130,6 +143,14 @@ Cuando se inicia sesión con la cuenta de administrador (`fguantay39@gmail.com` 
 ```text
 GyTSalta/
 ├── .env.example             # Plantilla de variables de entorno (DB host, user, pass, app config)
+├── config/
+│   ├── conexion.php         # Conexión PDO con bloque try-catch (Hito 2 / Clase 7)
+│   └── env.php              # Lector y parseador del archivo de entorno .env
+├── admin/                   # Módulo CRUD Hito 2 (Temática Noticias GyT)
+│   ├── index.php            # Listado principal y lectura de registros (Read)
+│   ├── crear.php            # Formulario e inserción con Prepared Statements (Create)
+│   ├── editar.php           # Formulario y actualización de publicaciones (Update)
+│   └── eliminar.php         # Lógica de eliminación segura con Prepared Statements (Delete)
 ├── auth_guard.php           # Guardián de rutas y control de acceso RBAC
 ├── auth.php                 # Helper de sincronización y validación de sesión
 ├── login.php                # Vista y controlador de inicio de sesión seguro
