@@ -1,100 +1,218 @@
-# Gimnasia y Tiro de Salta | Sitio Oficial del Hincha
+# Club Atlético Gimnasia y Tiro de Salta | Sitio Oficial del Hincha
 
-Sitio web oficial del hincha del **Club Atlético Gimnasia y Tiro de Salta** desarrollado con arquitectura PHP Server-Side Rendering (SSR), modularización por plantillas (SSI), variables de entorno (.env), base de datos relacional MySQL y sistema de autenticación seguro basado en sesiones y control de acceso por roles (**OWASP**).
+Repositorio oficial del proyecto web del **Club Atlético Gimnasia y Tiro de Salta** ("El Albo"), desarrollado como parte de la trayectoria de formación en **Programación Web** en la **EET N.º 3139 Gral. Martín Miguel de Güemes** (Salta, Argentina).
 
----
-
-## 🔐 Trabajo Práctico N° 8 — Persistencia de Sesión, Hashing Seguro y Control de Acceso (RBAC)
-
-> **Documentación Completa del TP8:** Consulta la carpeta [`tp8/`](./tp8/) y su guía técnica en [`tp8/README.md`](./tp8/README.md).
-
-### 1. Objetivos del Trabajo Práctico N° 8
-1. **Persistencia de estado con sesiones seguras:** Implementación de `$_SESSION` con cookies seguras (`HttpOnly`, `SameSite=Strict`, `Secure` en HTTPS).
-2. **Módulo de Registro, Login y Logout:** Flujo completo de autenticación conectado a MySQL mediante PDO con consultas preparadas.
-3. **Hashing seguro según OWASP:** Encriptación con `password_hash($pw, PASSWORD_BCRYPT, ['cost' => 12])` y validación con `password_verify()`.
-4. **Protección de rutas y control por roles:** Script reutilizable `auth_guard.php` que custodia vistas privadas y restringe accesos por rol (`admin` y `usuario`).
-
-### 2. Archivos Implementados del TP8
-- **[`auth_guard.php`](./auth_guard.php) / [`includes/auth_guard.php`](./includes/auth_guard.php):** Guardián de rutas reutilizable con funciones `verificar_autenticacion()` y `verificar_rol('admin')`.
-- **[`registro.php`](./registro.php):** Registro de nuevos socios con sanitización estricta anti-XSS (`htmlspecialchars`, `strip_tags`), validación de correo único y hashing BCRYPT.
-- **[`login.php`](./login.php):** Inicio de sesión con verificación de hash, invocación de `session_regenerate_id(true)` para mitigar **Session Fixation** y guardado seguro de variables `$_SESSION`.
-- **[`logout.php`](./logout.php):** Cierre seguro: vaciado de `$_SESSION`, eliminación de cookies del navegador con timestamp en el pasado y ejecución de `session_destroy()`.
-- **[`dashboard.php`](./dashboard.php):** **Vista Protegida 1:** Panel del Hincha y Carnet Digital de Socio (accesible para cualquier usuario autenticado).
-- **[`admin_panel.php`](./admin_panel.php):** **Vista Protegida 2:** Panel de Administración Albo (exclusivo para usuarios con rol `admin`).
-- **[`tp8/schema_usuarios.sql`](./tp8/schema_usuarios.sql):** Script DDL y DML de la tabla `usuarios` en MySQL.
-- **[`tp8/preparar_entrega_git_tp8.bat`](./tp8/preparar_entrega_git_tp8.bat):** Script automatizado para preparar ramas y commits atómicos del TP8 en Git.
-
-### 3. Credenciales de Prueba para Evaluación Docente
-
-| Rol | Correo Electrónico | Contraseña | Destino tras Login |
-|---|---|---|---|
-| **Administrador** | `franco.guantay@gyt.com.ar` | `Admin123!` | Redirige a [`admin_panel.php`](http://localhost/gyt-nuevo/admin_panel.php) |
-| **Socio / Usuario** | `agustin.perez@prensaalbo.com.ar` | `Socio123!` | Redirige a [`dashboard.php`](http://localhost/gyt-nuevo/dashboard.php) |
-| **Nuevo Socio** | Registrarse en [`registro.php`](http://localhost/gyt-nuevo/registro.php) | `(mínimo 8 car.)` | Redirige a [`login.php`](http://localhost/gyt-nuevo/login.php) |
+> **Alumno:** Franco Guantay  
+> **Institución:** Escuela de Educación Técnica N.º 3139 Gral. Martín Miguel de Güemes  
+> **Materia:** Programación Web  
+> **Repositorio GitHub:** [https://github.com/fguantay39-dot/GyTSalta.git](https://github.com/fguantay39-dot/GyTSalta.git)  
+> **Entorno de Ejecución:** Apache 2.4 / PHP 8.x / MySQL 8.x (XAMPP Server)
 
 ---
 
-## Trabajo Práctico N° 4 — Migración a PHP, Modularización (SSI) y Renderizado Server-Side (SSR)
+## 📋 Resumen de la Trayectoria de Desarrollo
 
-### 1. Título y Descripción del Proyecto
-- **Asignatura:** Programación Web (Unidad 4 – Entorno Servidor y Primeros Pasos con PHP).
-- **Autor:** Franco Guantay.
-- **Resumen de la Refactorización:**
-  Se transformó la maqueta estática previa (Hito 1 en HTML) en una aplicación web dinámica basada en **PHP 8**. Se implementó la técnica de **Server Side Includes (SSI)** mediante la extracción de componentes reutilizables (`header.php`, `nav.php`, `footer.php`), eliminando la duplicación de código en todas las vistas. Se sentaron las bases de **Server-Side Rendering (SSR)** mediante la inyección dinámica de títulos (`$titulo_pagina`), control dinámico del enlace activo en el menú (`$pagina_actual` con clase `.active`), y gestión de configuración centralizada con variables de entorno (`.env`).
+Este proyecto documenta la evolución integral de una aplicación web, desde su maquetación estática inicial hasta convertirse en una plataforma dinámica con arquitectura **Server-Side Rendering (SSR)** en PHP, base de datos relacional MySQL normalizada y un sistema robusto de autenticación, seguridad **OWASP** y **Control de Acceso Basado en Roles (RBAC)** con capacidades de CMS en vivo:
 
-### 2. Tecnologías Utilizadas
-- **HTML5 Semántico:** Estructura modular de pantallas y accesibilidad.
-- **CSS3 Personalizado & Responsive Design:** Variables CSS, maquetación flexible (Flexbox y CSS Grid), modo oscuro y soporte multidispositivo.
-- **JavaScript (ES6):** Reloj en tiempo real, interactividad de menú hamburguesa, visor modal de imágenes y validación en cliente.
-- **PHP 8.x:** Procesamiento del lado del servidor (SSR), inclusión de plantillas (SSI con `require_once`), validaciones y sanitización con `htmlspecialchars()`.
-- **Servidor Web Local:** XAMPP (Apache 2.4 + PHP 8 + MySQL/MariaDB).
-- **Gestión de Entorno:** Archivo `.env` privado y plantilla `.env.example` versionada.
-- **Control de Versiones:** Git y GitHub con flujo de ramas (`feature/migracion-php-ssi` integrada en `main`).
+```
+[Hito 1: Maquetación HTML5/CSS3/JS] 
+       │
+       ▼
+[TP 4: Migración a PHP 8 + Modularización SSI + SSR + .env]
+       │
+       ▼
+[Clase 5: Formularios POST/GET + Sanitización y Protección XSS]
+       │
+       ▼
+[TP 6: Base de Datos Relacional MySQL + Normalización 1FN, 2FN, 3FN]
+       │
+       ▼
+[TP 8: Sesiones Seguras + BCRYPT (OWASP) + RBAC + CMS de Administración Total]
+```
 
-### 3. Instrucciones de Instalación y Ejecución Local
-1. **Clonar el repositorio:**
+---
+
+## 🔐 Módulo de Administración Total (CMS) y Roles de Acceso (TP8)
+
+El sitio cuenta con una diferenciación completa entre dos tipos de experiencias:
+1. **Usuario / Hincha Común:** Diseñado exclusivamente para navegar, leer noticias, consultar el plantel profesional, revisar el fixture y tabla de posiciones, conocer la historia del club, ver fotos y enviar mensajes de contacto. No tiene permisos para modificar ningún contenido. Dispone de un carnet digital de socio en su panel personal.
+2. **Administrador (`fguantay39@gmail.com`):** Posee facultades para **editar la totalidad del sitio web** directamente desde la interfaz, sin necesidad de tocar código fuente.
+
+### 🔑 Credenciales de Prueba para Evaluación
+
+| Rol | Correo Electrónico | Contraseña | Permisos y Capacidades | Destino tras Login |
+|---|---|---|---|---|
+| **Administrador Oficial** | `fguantay39@gmail.com` | `Admin123!` | **Edición Total:** Portada, Noticias, Historia, Galería, Plantel, Fixture, Tabla y Gestión de Roles | Barra de Admin + Edición In-Situ + [`admin_panel.php`](http://localhost/gyt-nuevo/admin_panel.php) |
+| **Administrador Alternativo** | `franco.guantay@gyt.com.ar` | `Admin123!` | Mismos privilegios de administración y edición total | [`admin_panel.php`](http://localhost/gyt-nuevo/admin_panel.php) |
+| **Socio / Usuario Común** | `agustin.perez@prensaalbo.com.ar` | `Socio123!` | **Solo Navegación:** Lectura de notas, consulta de plantel/tabla y envío de consultas | Redirige a [`dashboard.php`](http://localhost/gyt-nuevo/dashboard.php) (Carnet Digital) |
+| **Nuevo Hincha** | Registrarse en [`registro.php`](http://localhost/gyt-nuevo/registro.php) | Clave propia (≥ 8 caracteres) | Rol automático de `usuario` común | Redirige al inicio de sesión |
+
+---
+
+### 🛠️ Herramientas de Edición Disponibles para el Administrador
+
+Cuando se inicia sesión con la cuenta de administrador (`fguantay39@gmail.com` o `franco.guantay@gyt.com.ar`), el sitio habilita dinámicamente:
+
+1. **Barra Superior de Estado en Tiempo Real (en todas las páginas):**
+   - Presente en el encabezado (`includes/header.php`), indicando el rol activo (**Administrador**, **Usuario/Socio** o **Invitado**).
+   - Para el admin, muestra acceso directo al Panel de Control y enlace rápido para cerrar sesión.
+
+2. **Portada Principal (`index.php`):**
+   - **Barra de Gestión:** Acceso a métricas del portal.
+   - **Publicador de Noticias en Vivo:** Formulario desplegable para redactar y publicar noticias de inmediato con categoría, título, bajada y contenido completo guardado en MySQL.
+   - **Edición y Eliminación In-Situ:** Cada noticia muestra botones para editar el texto o darla de baja al instante.
+   - **Gestor de Roles de Usuarios:** Permite al admin ascender usuarios a `admin` o degradarlos a `usuario` desde la misma portada.
+
+3. **Historia y Estadio (`historia.php`):**
+   - **Editor de Secciones:** Permite editar los textos de la historia del club (Orígenes de 1902, Grandes Ascensos, Copa Argentina) y los detalles del Estadio Monumental Gigante del Norte.
+   - **Gestor de Galería Fotográfica:** Formulario para subir nuevas postales históricas (con título, descripción y URL de imagen) y botón de eliminación para cada foto.
+
+4. **Plantel Profesional (`plantel.php`):**
+   - **Alta de Futbolistas:** Formulario para agregar jugadores con nombre, dorsal, posición (Arquero, Defensor, Volante, Delantero), partidos jugados, goles y fotografía.
+   - **Edición y Baja de Jugadores:** Modificación de estadísticas de rendimiento o baja del jugador en tiempo real.
+
+5. **Fixture y Tabla de Posiciones (`partidos.php`):**
+   - **Editor de Partidos:** Agregar nuevos encuentros al fixture con fecha, horario, rival, condición (Local/Visitante), estado y resultado.
+   - **Editor de Tabla de Posiciones:** Actualización directa de los puntos (Pts) y partidos jugados (PJ) de los equipos de la Primera Nacional.
+
+6. **Noticias Albo (`noticias.php`):**
+   - Edición completa de títulos, bajadas, categorías y eliminación de artículos.
+
+7. **Buzón de Contacto (`contacto.php`):**
+   - Los hinchas envían consultas mediante el formulario; el administrador tiene una sección privada para leer todos los mensajes recibidos y eliminarlos tras su respuesta.
+
+8. **Panel de Control Central (`admin_panel.php`):**
+   - Dashboard consolidado con métricas de usuarios registrados, publicaciones activas, estadísticas del plantel y accesos directos de mantenimiento.
+
+---
+
+## 📚 Detalle de Trabajos Prácticos y Módulos Desarrollados
+
+### 1. Trabajo Práctico N° 8 — Persistencia de Sesión, Hashing Seguro (OWASP) y RBAC
+*Ubicación detallada:* [`tp8/README.md`](./tp8/README.md) y [`tp8/schema_usuarios.sql`](./tp8/schema_usuarios.sql)
+- **Persistencia de Sesión Segura:** Empleo de variables superglobales `$_SESSION` con cookies seguras configuradas con atributos `HttpOnly` (previene robo por scripts XSS), `SameSite=Strict` (protección contra CSRF) y expiración controlada.
+- **Mitigación de Session Fixation:** Invocación inmediata de `session_regenerate_id(true)` tras validar las credenciales en el login para invalidar identificadores antiguos.
+- **Cifrado Fuerte de Contraseñas:** Algoritmo **BCRYPT** (`PASSWORD_BCRYPT` con costo 12) mediante `password_hash()`, cumpliendo las directrices de ciberseguridad de **OWASP**. Validación con `password_verify()`.
+- **Guardián de Rutas Reutilizable (`auth_guard.php`):** Funciones `verificar_autenticacion()` y `verificar_rol('admin')` que blindan el acceso a las vistas privadas del sistema.
+- **Cierre Seguro (`logout.php`):** Vaciado de variables (`$_SESSION = []`), destrucción del archivo de sesión en el servidor con `session_destroy()` y expiración deliberada de la cookie en el cliente (`setcookie`).
+
+---
+
+### 2. Trabajo Práctico N° 6 — Base de Datos Relacional MySQL y Normalización
+*Ubicación detallada:* [`tp6/NORMALIZACION.md`](./tp6/NORMALIZACION.md), [`tp6/schema.sql`](./tp6/schema.sql) y [`tp6/consultas.sql`](./tp6/consultas.sql)
+- **Normalización de Base de Datos:**
+  - **1FN (Primera Forma Normal):** Eliminación de grupos repetitivos y garantía de atomicidad en todos los campos (ej. separación de nombres, apellidos y roles).
+  - **2FN (Segunda Forma Normal):** Dependencia funcional completa de las claves primarias; eliminación de redundancias parciales mediante tablas intermedias y claves foráneas.
+  - **3FN (Tercera Forma Normal):** Eliminación de dependencias transitivas (ej. las categorías y estados residen en tablas normalizadas).
+- **Esquema Relacional (`gyt_comunidad`):** Tablas de `usuarios`, `publicaciones`, `categorias`, `comentarios`, `secciones_contenido`, `plantel_jugadores`, `partidos_fixture`, `tabla_posiciones` y `mensajes_contacto`.
+- **Integridad y Rendimiento:** Definición de claves primarias compuestas, claves foráneas (`FOREIGN KEY`) con políticas de integridad referencial, e índices para búsquedas optimizadas.
+
+---
+
+### 3. Clase 5 — Procesamiento de Formularios y Seguridad XSS
+*Ubicación detallada:* Carpeta [`clase5/`](./clase5/)
+- **Formulario POST (Contacto):** Procesamiento en el servidor de campos de texto, validación de obligatoriedad y validación de formato de correo con `filter_var($email, FILTER_VALIDATE_EMAIL)`.
+- **Formulario GET (Búsqueda):** Búsqueda y filtrado de noticias en tiempo real con sanitización de términos de consulta.
+- **Seguridad y Escape de Salida:** Tratamiento estricto contra inyecciones de código mediante `htmlspecialchars($campo, ENT_QUOTES | ENT_HTML5, 'UTF-8')` y `strip_tags()` antes de persistir o imprimir cualquier información.
+
+---
+
+### 4. Trabajo Práctico N° 4 — Migración a PHP, Modularización (SSI) y Renderizado Server-Side (SSR)
+- **Migración Integral a PHP:** Transformación de la maqueta estática inicial (Hito 1 en HTML) a una arquitectura dinámica en PHP 8.
+- **Modularización por Plantillas (Server-Side Includes - SSI):** Extracción de componentes comunes en la carpeta `includes/` (`header.php`, `nav.php`, `footer.php`), permitiendo una mantención centralizada.
+- **Server-Side Rendering (SSR):** Inyección dinámica de títulos (`$titulo_pagina`), detección de la página en navegación para aplicar la clase `.active` en el menú (`$pagina_actual`), y renderizado en servidor de tarjetas informativas.
+- **Gestión de Entorno Seguro:** Configuración desacoplada mediante variables de entorno con archivo privado `.env` y plantilla versionada `.env.example`.
+
+---
+
+## 📁 Estructura del Proyecto
+
+```text
+GyTSalta/
+├── .env.example             # Plantilla de variables de entorno (DB host, user, pass, app config)
+├── auth_guard.php           # Guardián de rutas y control de acceso RBAC
+├── auth.php                 # Helper de sincronización y validación de sesión
+├── login.php                # Vista y controlador de inicio de sesión seguro
+├── registro.php             # Formulario y alta segura de nuevos hinchas
+├── logout.php               # Cierre de sesión y destrucción de cookies
+├── dashboard.php            # Vista protegida: Panel de Socio / Carnet Digital (Rol: usuario/admin)
+├── admin_panel.php          # Vista protegida: Panel de Control de Administración (Rol: admin)
+├── index.php                # Portada del hincha + Editor CMS de noticias y roles para admin
+├── historia.php             # Historia y Estadio + Editor de textos y fotos para admin
+├── plantel.php              # Plantel profesional + Alta/Baja/Edición de jugadores para admin
+├── partidos.php             # Fixture y Tabla + Editor de fechas y puntuaciones para admin
+├── noticias.php             # Archivo de noticias + Herramientas de edición para admin
+├── contacto.php             # Formulario de contacto + Bandeja privada de mensajes para admin
+├── css/                     # Estilos CSS modulares, variables y responsive design
+├── js/                      # JavaScript para reloj digital, modal de fotos y menú hamburguesa
+├── img/                     # Recursos gráficos institucionales y escudo oficial
+├── includes/                # Componentes SSI reutilizables
+│   ├── header.php           # Encabezado con barra de estado de rol y sesión
+│   ├── nav.php              # Navegación principal con enlaces dinámicos según rol
+│   ├── footer.php           # Pie de página institucional y copyright
+│   ├── db.php               # Conexión centralizada a base de datos mediante PDO
+│   └── auth_guard.php       # Alias modular del guardián
+├── config/
+│   └── env.php              # Lector y parseador del archivo de entorno .env
+├── tp6/                     # Entregables del Trabajo Práctico N° 6
+│   ├── NORMALIZACION.md     # Documento formal de normalización (1FN, 2FN, 3FN)
+│   ├── schema.sql           # Script DDL de creación de tablas e índices en MySQL
+│   ├── consultas.sql        # Consultas DML de prueba (SELECT, INSERT, UPDATE, DELETE)
+│   └── capturas/            # Capturas del proceso de normalización y base de datos
+├── tp8/                     # Entregables del Trabajo Práctico N° 8
+│   ├── schema_usuarios.sql  # Script DDL/DML de usuarios y credenciales iniciales
+│   ├── README.md            # Documentación técnica exhaustiva de seguridad y RBAC
+│   └── preparar_entrega_git_tp8.bat # Script de automatización de commits Git
+└── README.md                # Esta documentación general del repositorio
+```
+
+---
+
+## 🚀 Guía de Instalación y Puesta en Marcha Local
+
+1. **Clonar el Repositorio de GitHub:**
    ```bash
    git clone https://github.com/fguantay39-dot/GyTSalta.git
    ```
-2. **Copiar a la carpeta del servidor local:**
-   Ubicar la carpeta del proyecto dentro del directorio raíz de XAMPP:
-   ```
+
+2. **Copiar el proyecto al servidor web:**
+   Ubicar la carpeta del proyecto en el directorio `htdocs` de XAMPP:
+   ```text
    C:\xampp\htdocs\gyt-nuevo\
    ```
-3. **Configurar las variables de entorno:**
-   Copiar el archivo de plantilla `.env.example` y renombrarlo como `.env`:
+
+3. **Configurar el archivo de entorno `.env`:**
+   Copiar `.env.example` y nombrarlo `.env`:
    ```bash
    copy .env.example .env
    ```
-4. **Iniciar el servidor local:**
-   - Abrir el panel de control de **XAMPP**.
-   - Iniciar el servicio **Apache** y **MySQL**.
-5. **Rutas principales de la aplicación:**
+   Verificar las credenciales de conexión a MySQL:
+   ```env
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_NAME=gyt_comunidad
+   DB_USER=root
+   DB_PASS=
+   APP_ENV=local
+   ```
+
+4. **Importar la Base de Datos en MySQL:**
+   - Abrir el panel de XAMPP e iniciar **Apache** y **MySQL**.
+   - Ingresar a phpMyAdmin en `http://localhost/phpmyadmin/`.
+   - Crear la base de datos `gyt_comunidad`.
+   - Importar primero los esquemas estructurales:
+     - [`tp6/schema.sql`](./tp6/schema.sql)
+     - [`tp8/schema_usuarios.sql`](./tp8/schema_usuarios.sql)
+
+5. **Acceder a la Aplicación:**
    - **Inicio / Portada Principal:** [`http://localhost/gyt-nuevo/`](http://localhost/gyt-nuevo/)
-   - **Noticias:** [`http://localhost/gyt-nuevo/noticias.php`](http://localhost/gyt-nuevo/noticias.php)
-   - **Plantel Oficial:** [`http://localhost/gyt-nuevo/plantel.php`](http://localhost/gyt-nuevo/plantel.php)
-   - **Partidos y Tabla:** [`http://localhost/gyt-nuevo/partidos.php`](http://localhost/gyt-nuevo/partidos.php)
-   - **Historia y Estadio:** [`http://localhost/gyt-nuevo/historia.php`](http://localhost/gyt-nuevo/historia.php)
-   - **Contacto Institucional:** [`http://localhost/gyt-nuevo/contacto.php`](http://localhost/gyt-nuevo/contacto.php)
-   - **Iniciar Sesión (TP8):** [`http://localhost/gyt-nuevo/login.php`](http://localhost/gyt-nuevo/login.php)
-   - **Registro de Socios (TP8):** [`http://localhost/gyt-nuevo/registro.php`](http://localhost/gyt-nuevo/registro.php)
-   - **Mi Panel / Carnet Digital (TP8 - Protegido):** [`http://localhost/gyt-nuevo/dashboard.php`](http://localhost/gyt-nuevo/dashboard.php)
-   - **Panel Administrador (TP8 - Solo Admin):** [`http://localhost/gyt-nuevo/admin_panel.php`](http://localhost/gyt-nuevo/admin_panel.php)
+   - **Inicio de Sesión:** [`http://localhost/gyt-nuevo/login.php`](http://localhost/gyt-nuevo/login.php)
+   - **Registro de Socios:** [`http://localhost/gyt-nuevo/registro.php`](http://localhost/gyt-nuevo/registro.php)
 
 ---
 
-## Clase 5 — Formularios y seguridad XSS
-
-El desarrollo está dentro de la carpeta `clase5`.
-- **POST — Contacto:** procesa nombre, correo y mensaje en el servidor con validaciones.
-- **GET — Búsqueda:** filtra novedades por palabra clave o categoría.
-- **Seguridad:** normalización, validación y escape con `htmlspecialchars()`.
-
----
-
-## TP6 — Base de Datos Relacional, Normalización y Consultas SQL
-
-Toda la documentación, diagramas y scripts de base de datos se encuentran en la carpeta [`tp6/`](./tp6/):
-- **[NORMALIZACION.md](./tp6/NORMALIZACION.md):** 1FN, 2FN, 3FN y modelo relacional.
-- **[schema.sql](./tp6/schema.sql):** Script DDL con claves foráneas e índices.
-- **[consultas.sql](./tp6/consultas.sql):** Consultas DML de prueba (CRUD).
+## 📌 Autoría y Créditos
+- **Desarrollador:** Franco Guantay
+- **Colegio:** EET N.º 3139 Gral. Martín Miguel de Güemes — Salta, Argentina
+- **Materia:** Programación Web
+- **Año:** 2026
